@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+        <title>대한민국 위치 검색</title>
+        <link rel="icon" href="img/favicon.ico">
+        <link rel="stylesheet" href="css/reset.css">
+        <link rel="stylesheet" href="css/style.css">
+        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=18617e8d14de1bf2e2126d409e258ca1&libraries=services"></script>
+        <script type="text/javascript" src="js/script.js"></script>
+    </head>
+    <body>
+        <header>
+            <h1>대한민국 위치 검색</h1>
+            <a href="#" id="gps">GPS</a>
+            <div class="input_box cf">
+                <input type="text" style="display:block;" id="search_text" placeholder="주소를 입력하세요.">
+                <div id="pointer_input" style="display:none">
+                    <input type="text" class="latitude" placeholder="위도">
+                    <input type="text" class="longitude" placeholder="경도">
+                </div>
+                <a href="#" id="search_btn">Search</a>
+            </div>
+            <div class="radio_box">
+                <div>
+                    <label for="address">주소</label>
+                    <input type="radio" name="search_type" for="address" checked="checked" value="address">
+                </div>
+                <div>
+                    <label for="pointer">위도,경도</label>
+                    <input type="radio" name="search_type" for="pointer" value="pointer">
+                </div>
+            </div>
+        </header>
+        <section class="cf">
+            <div id="search_list"></div>
+            <div id="map"></div>
+        </section>
+        <footer>
+            <div class="txt_wrap">
+                <a href="https://github.com/powercat">https://github.com/powercat</a>
+                <p>Copyright 2019 KIM KI SOON. All rights reserved.</p>
+            </div>
+        </footer>
+    </body>
+</html>
