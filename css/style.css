@@ -5,7 +5,7 @@ body{
     color:#212121;
     font-size:14px;
 }
-input,::placeholder{
+input[type="text"],::placeholder{
     font-family:"Nanum Gothic",sans-serif;
 }
 header{
@@ -33,6 +33,7 @@ header .input_box{
     padding:5px;
     height:20px;
     margin-top:25px;
+    line-height:0;
 }
 #search_text:focus{
     width:180px;
@@ -88,6 +89,7 @@ section{
     padding:5px;
     height:20px;
     margin-top:25px;
+    line-height:0;
 }
 section #search_list{
     position:absolute;

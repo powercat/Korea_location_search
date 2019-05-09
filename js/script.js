@@ -1,13 +1,13 @@
 document.addEventListener('DOMContentLoaded',function(){
     /*-------------------kakao_map----------------------*/
-let kakao_map=document.getElementById('map'),
-    mapOption={
-        center:new daum.maps.LatLng(37.566826005485716, 126.9786567859313),
-        level: 3
-    };
-let map=new daum.maps.Map(kakao_map,mapOption),
-    geocoder=new daum.maps.services.Geocoder(),
-    marker = new daum.maps.Marker();
+    let kakao_map=document.getElementById('map'),
+        mapOption={
+            center:new daum.maps.LatLng(37.566826005485716, 126.9786567859313),
+            level: 3
+        };
+    let map=new daum.maps.Map(kakao_map,mapOption),
+        geocoder=new daum.maps.services.Geocoder(),
+        marker = new daum.maps.Marker();
     /*--------------------------------------*/
     const gps_btn=document.getElementById('gps'),
           search_text=document.getElementById('search_text'),
@@ -221,18 +221,29 @@ let map=new daum.maps.Map(kakao_map,mapOption),
     /*---------------input_radio_type_evetn----------------*/
     const radio_checked = document.querySelectorAll('.radio_box input[type="radio"]');
     for(let i=0; i<radio_checked.length; i++){
+        if(radio_checked[i].checked){
+            radio_value = radio_checked[i].defaultValue
+            if(radio_value=="address"){
+                search_text.style.display='block';
+                pointer_input_box.style.display='none';
+            }else if(radio_value=="pointer"){
+                search_text.style.display='none';
+                pointer_input_box.style.display='block';
+            }
+        }
+    }
+    for(let i=0; i<radio_checked.length; i++){
         (function(i){
-            radio_checked[i].addEventListener('input',function(e){
-                if(e.target.value=="address"){
-                    radio_value=e.target.value;
+            radio_checked[i].addEventListener('click',function(){
+                radio_value = this.defaultValue
+                if(radio_value=="address"){
                     search_text.style.display='block';
                     pointer_input_box.style.display='none';
-                }else if(e.target.value=="pointer"){
-                    radio_value=e.target.value;
+                }else if(radio_value=="pointer"){
                     search_text.style.display='none';
                     pointer_input_box.style.display='block';
                 }
-            },false)
+            },false);
         }(i));
     }
-})
+});
