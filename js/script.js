@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded',function(){
         }
         latitude_num = Number(latitude_num);
         longitude_num = Number(longitude_num);
-        if(!latitude_num||!longitude_num){
+        if(isNaN(latitude_num)||isNaN(longitude_num)){
             alert("숫자만 입력하세요");
             return;
         }
