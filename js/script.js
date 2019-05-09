@@ -68,6 +68,8 @@ let map=new daum.maps.Map(kakao_map,mapOption),
             return;
         }
         geocoder.addressSearch(search_value,function(result, status){
+            console.log(result);
+            console.log(status);
             search_list.innerHTML="";
             if (status===daum.maps.services.Status.OK){
                 let search_list_html="",
@@ -75,15 +77,20 @@ let map=new daum.maps.Map(kakao_map,mapOption),
                     search_num,
                     search_for = function(){
                         for(let i=0; i<result.length; i++){
-                            if(result[i].address){
-                                if(result[i].address.zip_code){
-                                    search_list_html+='<a href="#">'+result[i].address_name+'</a>';
-                                    search_list_html+='<p>위도 : '+result[i].y+'</p>';
-                                    search_list_html+='<p>경도 : '+result[i].x+'</p>';
-                                    search_bool = true;
-                                    search_num=i;
-                                    return;
-                                }
+                            if(result[i].road_address){
+                                search_list_html+='<a href="#">'+result[i].road_address.address_name+'</a>';
+                                search_list_html+='<p>위도 : '+result[i].y+'</p>';
+                                search_list_html+='<p>경도 : '+result[i].x+'</p>';
+                                search_bool = true;
+                                search_num=i;
+                                return;
+                            }else if(result[i].address){
+                                search_list_html+='<a href="#">'+result[i].address.address_name+'</a>';
+                                search_list_html+='<p>위도 : '+result[i].y+'</p>';
+                                search_list_html+='<p>경도 : '+result[i].x+'</p>';
+                                search_bool = true;
+                                search_num=i;
+                                return;
                             }
                         }
                     }
@@ -105,7 +112,6 @@ let map=new daum.maps.Map(kakao_map,mapOption),
                     let coords=new daum.maps.LatLng(result[i].y,result[i].x);
                     map.setCenter(coords);
                 }
-                
                 let search_list_link = document.querySelector('#search_list a');
                 if(search_list_link){
                     search_list_link.addEventListener('click',function(){
@@ -147,7 +153,7 @@ let map=new daum.maps.Map(kakao_map,mapOption),
                 position: coord
             });
             map.setCenter(coord);
-            if (status===daum.maps.services.Status.OK){
+            if(status===daum.maps.services.Status.OK){
                 if(result[0].road_address){
                     search_list.innerHTML+='<a href="#">'+result[0].road_address.address_name+'</a>';
                 }else if(result[0].address){
