@@ -8,6 +8,8 @@ body{
 header{
     position:relative;
     height:50px;
+    border-bottom:1px solid #ededed;
+    box-sizing:border-box;
 }
 header h1{
     text-align:center;

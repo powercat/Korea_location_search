@@ -50,8 +50,10 @@ let map=new daum.maps.Map(kakao_map,mapOption),
                     }else if(status===daum.maps.services.Status.ZERO_RESULT){
                         alert('검색결과가 없습니다.');
                         search_list.innerHTML='<p>검색 결과 없음</p>';
+                        search_list.innerHTML+='<p>위도 : '+gps_position.coords.latitude+'</p>';
+                        search_list.innerHTML+='<p>경도 : '+gps_position.coords.longitude+'</p>';
                     }else if(status===daum.maps.services.Status.ERROR){
-                        alert('daum maps services Status error')
+                        alert('daum maps services Status error(gps_btn)')
                     }
             });
         },function(gps_err){
@@ -66,24 +68,25 @@ let map=new daum.maps.Map(kakao_map,mapOption),
             return;
         }
         geocoder.addressSearch(search_value,function(result, status){
-            let search_list_link = document.querySelectorAll('#search_list a');
-                search_list.innerHTML="";
+            search_list.innerHTML="";
             if (status===daum.maps.services.Status.OK){
-                let search_list_html="";
-                let search_bool = false;
-                let search_num;
-                let search_for = function(){
-                    for(let i=0; i<result.length; i++){
-                        if(result[i].address.zip_code){
-                            search_list_html+='<a href="#">'+result[i].address_name+'</a>';
-                            search_list_html+='<p>위도 : '+result[i].y+'</p>';
-                            search_list_html+='<p>경도 : '+result[i].x+'</p>';
-                            search_bool = true;
-                            search_num=i;
-                            return;
+                let search_list_html="",
+                    search_bool = false,
+                    search_num,
+                    search_for = function(){
+                        for(let i=0; i<result.length; i++){
+                            if(result[i].address){
+                                if(result[i].address.zip_code){
+                                    search_list_html+='<a href="#">'+result[i].address_name+'</a>';
+                                    search_list_html+='<p>위도 : '+result[i].y+'</p>';
+                                    search_list_html+='<p>경도 : '+result[i].x+'</p>';
+                                    search_bool = true;
+                                    search_num=i;
+                                    return;
+                                }
+                            }
                         }
                     }
-                }
                 search_for();
                 if(search_bool){
                     search_list.innerHTML=search_list_html;
@@ -93,28 +96,29 @@ let map=new daum.maps.Map(kakao_map,mapOption),
                         map:map,
                         position:new daum.maps.LatLng(result[search_num].y,result[search_num].x)
                     });
+                }else{
+                    marker.setMap(null);
+                    alert('검색결과가 없습니다.');
+                    search_list.innerHTML='<p>검색 결과 없음</p>';
                 }
                 const search_list_function_clink=function(i){
                     let coords=new daum.maps.LatLng(result[i].y,result[i].x);
                     map.setCenter(coords);
                 }
                 
-                search_list_link = document.querySelectorAll('#search_list a');
-                
-                for(let i=0; i<search_list_link.length; i++){
-                    (function(i){
-                        search_list_link[i].addEventListener('click',function(){
-                            search_list_function_clink(i);
-                        },false);
-                        search_list_link[i].addEventListener('click',function(e){e.preventDefault();},false);
-                    }(i));
+                let search_list_link = document.querySelector('#search_list a');
+                if(search_list_link){
+                    search_list_link.addEventListener('click',function(){
+                        search_list_function_clink(i);
+                    },false);
+                    search_list_link.addEventListener('click',function(e){e.preventDefault();},false);
                 }
             }else if(status===daum.maps.services.Status.ZERO_RESULT){
                 marker.setMap(null);
                 alert('검색결과가 없습니다.');
                 search_list.innerHTML='<p>검색 결과 없음</p>';
             }else if(status===daum.maps.services.Status.ERROR){
-                alert(status+' ERROR!!');
+                alert('daum maps services Status error(search)');
             }
         });
     }
@@ -125,44 +129,47 @@ let map=new daum.maps.Map(kakao_map,mapOption),
         let latitude_num = pointer_input_latitude.value,
             longitude_num = pointer_input_longitude.value;
         if(!latitude_num||!longitude_num){
-            alert("값을 입력하세요.")
+            alert("값을 입력하세요.");
             return;
         }
         latitude_num = Number(latitude_num);
         longitude_num = Number(longitude_num);
-            let coord = new daum.maps.LatLng(latitude_num,longitude_num);
-            geocoder.coord2Address(coord.getLng(),coord.getLat(),function(result, status){
-                search_list.innerHTML='';
-                marker.setMap(null);
-                marker=new daum.maps.Marker({
-                    map: map,
-                    position: coord
-                });
-                map.setCenter(coord);
-                console.log(result)
-                if (status===daum.maps.services.Status.OK){
-                    if(result[0].road_address){
-                        search_list.innerHTML+='<a href="#">'+result[0].road_address.address_name+'</a>';
-                    }else if(result[0].address){
-                        search_list.innerHTML+='<a href="#">'+result[0].address.address_name+'</a>';
-                    }
-                    search_list.innerHTML+='<p>위도 : '+latitude_num+'</p>';
-                    search_list.innerHTML+='<p>경도 : '+longitude_num+'</p>';
-                    let search_list_link = document.querySelector('#search_list a');
-                    search_list_link.addEventListener('click',function(e){
-                        e.preventDefault();
-                        let coords=new daum.maps.LatLng(latitude_num,longitude_num);
-                        map.setCenter(coords);
-                    },false);
-                }else if(status===daum.maps.services.Status.ZERO_RESULT){
-                    alert('검색결과가 없습니다.');
-                    search_list.innerHTML='<p>검색 결과 없음</p>';
-                    search_list.innerHTML+='<p>위도 : '+latitude_num+'</p>';
-                    search_list.innerHTML+='<p>경도 : '+longitude_num+'</p>';
-                }else if(status===daum.maps.services.Status.ERROR){
-                    alert(status+' ERROR!!');
-                }
+        if(!latitude_num||!longitude_num){
+            alert("숫자만 입력하세요");
+            return;
+        }
+        let coord = new daum.maps.LatLng(latitude_num,longitude_num);
+        geocoder.coord2Address(coord.getLng(),coord.getLat(),function(result, status){
+            search_list.innerHTML='';
+            marker.setMap(null);
+            marker=new daum.maps.Marker({
+                map: map,
+                position: coord
             });
+            map.setCenter(coord);
+            if (status===daum.maps.services.Status.OK){
+                if(result[0].road_address){
+                    search_list.innerHTML+='<a href="#">'+result[0].road_address.address_name+'</a>';
+                }else if(result[0].address){
+                    search_list.innerHTML+='<a href="#">'+result[0].address.address_name+'</a>';
+                }
+                search_list.innerHTML+='<p>위도 : '+latitude_num+'</p>';
+                search_list.innerHTML+='<p>경도 : '+longitude_num+'</p>';
+                let search_list_link = document.querySelector('#search_list a');
+                search_list_link.addEventListener('click',function(e){
+                    e.preventDefault();
+                    let coords=new daum.maps.LatLng(latitude_num,longitude_num);
+                    map.setCenter(coords);
+                },false);
+            }else if(status===daum.maps.services.Status.ZERO_RESULT){
+                alert('검색결과가 없습니다.');
+                search_list.innerHTML='<p>검색 결과 없음</p>';
+                search_list.innerHTML+='<p>위도 : '+latitude_num+'</p>';
+                search_list.innerHTML+='<p>경도 : '+longitude_num+'</p>';
+            }else if(status===daum.maps.services.Status.ERROR){
+                alert('daum maps services Status error(latitude and longitude search)');
+            }
+        });
     }
     /*-----------search_btn_evetn--------------*/
     search_btn.addEventListener('click',function(e){
