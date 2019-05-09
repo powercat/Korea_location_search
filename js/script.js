@@ -68,8 +68,6 @@ let map=new daum.maps.Map(kakao_map,mapOption),
             return;
         }
         geocoder.addressSearch(search_value,function(result, status){
-            console.log(result);
-            console.log(status);
             search_list.innerHTML="";
             if (status===daum.maps.services.Status.OK){
                 let search_list_html="",
