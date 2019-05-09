@@ -142,6 +142,14 @@ document.addEventListener('DOMContentLoaded',function(){
             alert("숫자만 입력하세요");
             return;
         }
+        if(latitude_num<32||latitude_num>44){
+            alert('위도 수치 범위를 벗어났습니다. 제한범위(32~44)');
+            return;
+        }
+        if(longitude_num<117||longitude_num>137){
+            alert('경도 수치 범위를 벗어났습니다. 제한범위(117~137)');
+            return;
+        }
         let coord = new daum.maps.LatLng(latitude_num,longitude_num);
         geocoder.coord2Address(coord.getLng(),coord.getLat(),function(result, status){
             search_list.innerHTML='';
